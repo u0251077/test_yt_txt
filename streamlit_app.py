@@ -7,7 +7,7 @@ from openai import OpenAI
 # 設置你的 API 金鑰
 api_key = st.text_input('請輸入 OpenAI API 金鑰', type='password')
 openai.api_key = api_key
-client = OpenAI(api_key)
+client = OpenAI(api_key=api_key)
 st.title('音訊轉錄並生成摘要')
 
 # 上傳音訊文件
