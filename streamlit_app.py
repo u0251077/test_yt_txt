@@ -1,30 +1,29 @@
 import streamlit as st
-from pytube import YouTube
 import whisper
 import openai
 import os
+from tempfile import NamedTemporaryFile
 
 # OpenAI API 金鑰
 openai.api_key = 'your-api-key'
 
-st.title('YouTube 影片轉文字並生成摘要')
+st.title('影片轉文字並生成摘要')
 
-# 輸入 YouTube 影片 URL
-video_url = st.text_input('請輸入 YouTube 影片 URL:')
+# 上傳影片
+uploaded_file = st.file_uploader("上傳影片檔案", type=["mp4", "m4a", "wav", "flac"])
 
-if video_url:
-    # 步驟 1：使用 pytube 下載 YouTube 影片音訊
-    st.write("下載音訊中...")
-    yt = YouTube(video_url)
-    audio_stream = yt.streams.filter(only_audio=True).first()
-    audio_file = audio_stream.download(filename="audio.mp4")
+if uploaded_file is not None:
+    # 將上傳的文件保存到臨時文件中
+    with NamedTemporaryFile(delete=False) as temp_file:
+        temp_file.write(uploaded_file.read())
+        temp_file_path = temp_file.name
 
-    st.write("音訊下載完成。")
+    st.write("影片上傳完成。")
 
     # 步驟 2：使用 Whisper 將音訊轉換為文字
     st.write("轉換音訊為文字中...")
     model = whisper.load_model("base")
-    result = model.transcribe("audio.mp4")
+    result = model.transcribe(temp_file_path)
     text = result['text']
     st.write("轉換完成。")
 
@@ -46,5 +45,5 @@ if video_url:
     st.subheader('影片摘要:')
     st.write(summary)
 
-    # 清理音訊檔案
-    os.remove("audio.mp4")
+    # 清理臨時文件
+    os.remove(temp_file_path)
