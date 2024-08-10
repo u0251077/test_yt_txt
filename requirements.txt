@@ -3,3 +3,4 @@ pytube
 streamlit
 whisper
 openai
+graphviz
