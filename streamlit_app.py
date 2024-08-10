@@ -3,7 +3,6 @@ import openai
 from tempfile import NamedTemporaryFile
 from openai import OpenAI
 
-client = OpenAI(api_key)
 
 # 設置你的 API 金鑰
 api_key = st.text_input('請輸入 OpenAI API 金鑰', type='password')
