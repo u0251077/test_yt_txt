@@ -1,11 +1,14 @@
 import streamlit as st
 import openai
 from tempfile import NamedTemporaryFile
+from openai import OpenAI
+
+client = OpenAI(api_key)
 
 # 設置你的 API 金鑰
 api_key = st.text_input('請輸入 OpenAI API 金鑰', type='password')
 openai.api_key = api_key
-
+client = OpenAI(api_key)
 st.title('音訊轉錄並生成摘要')
 
 # 上傳音訊文件
@@ -17,14 +20,14 @@ if uploaded_file and api_key:
         temp_file.write(uploaded_file.read())
         temp_file_path = temp_file.name
 
-    # 使用 OpenAI Whisper 進行音訊轉錄
-    st.write("轉錄音訊中...")
-    with open(temp_file_path, "rb") as audio_file:
-        response = openai.Audio.transcriptions.create(
-            model="whisper-1",
-            file=audio_file
-        )
+    audio_file= open(temp_file_path, "rb")
+    transcription = client.audio.transcriptions.create(
+      model="whisper-1", 
+      file=audio_file
+    )
+    st.write(transcription.text)
 
+    
     # 顯示轉錄結果
     transcription_text = response['text']
     st.subheader('音訊轉錄內容:')
