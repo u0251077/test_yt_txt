@@ -18,7 +18,7 @@ def download_audio_from_youtube(url, output_audio_path):
 
 
 # 示例使用
-youtube_url = "https://youtu.be/gOCN-mU7qkg"  
+youtube_url = "https://youtu.be/aAWrgt56uEk"  # 替换为实际的 YouTube 视频 URL
 output_audio_path = "downloaded_audio"
 
 # 下载 YouTube 音频
