@@ -1,37 +1,50 @@
 import streamlit as st
-import yt_dlp
+from pytube import YouTube
+import whisper
+import openai
+import os
 
-# 标题
-st.title("YouTube 视频下载器")
+# OpenAI API 金鑰
+openai.api_key = 'your-api-key'
 
-# 输入框获取 YouTube 视频链接
-video_url = st.text_input("输入 YouTube 视频链接:")
+st.title('YouTube 影片轉文字並生成摘要')
 
-# 文件保存路径
-download_path = st.text_input("输入保存路径 (默认为当前目录):", value=".")
+# 輸入 YouTube 影片 URL
+video_url = st.text_input('請輸入 YouTube 影片 URL:')
 
 if video_url:
-    try:
-        # 显示可用的格式选项
-        ydl_opts = {'quiet': True, 'skip_download': True, 'listformats': True}
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(video_url, download=False)
-            formats = info_dict.get('formats', [])
-            format_options = [f"{fmt['format_id']} - {fmt['format_note']} - {fmt['ext']}" for fmt in formats]
-        
-        # 选择格式
-        selected_format = st.selectbox("选择格式:", format_options)
-        format_id = selected_format.split(" ")[0]
+    # 步驟 1：使用 pytube 下載 YouTube 影片音訊
+    st.write("下載音訊中...")
+    yt = YouTube(video_url)
+    audio_stream = yt.streams.filter(only_audio=True).first()
+    audio_file = audio_stream.download(filename="audio.mp4")
 
-        # 下载按钮
-        if st.button("下载视频"):
-            ydl_opts = {
-                'format': format_id,
-                'outtmpl': f'{download_path}/%(title)s.%(ext)s',
-                'quiet': True
-            }
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([video_url])
-            st.success("视频下载成功!")
-    except Exception as e:
-        st.error(f"下载视频时出错: {e}")
+    st.write("音訊下載完成。")
+
+    # 步驟 2：使用 Whisper 將音訊轉換為文字
+    st.write("轉換音訊為文字中...")
+    model = whisper.load_model("base")
+    result = model.transcribe("audio.mp4")
+    text = result['text']
+    st.write("轉換完成。")
+
+    # 顯示轉換出的文字
+    st.subheader('影片文字內容:')
+    st.text_area("影片內容:", text, height=200)
+
+    # 步驟 3：使用 OpenAI API 生成摘要
+    st.write("生成摘要中...")
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": f"請總結以下影片內容：\n\n{text}"}
+        ]
+    )
+
+    summary = response['choices'][0]['message']['content']
+    st.subheader('影片摘要:')
+    st.write(summary)
+
+    # 清理音訊檔案
+    os.remove("audio.mp4")
