@@ -1,55 +1,36 @@
 import streamlit as st
 import openai
-import whisper
-import os
 from tempfile import NamedTemporaryFile
 
-st.title('影片轉文字並生成摘要')
-
-# 讓用戶輸入 OpenAI API 金鑰
+# 設置你的 API 金鑰
 api_key = st.text_input('請輸入 OpenAI API 金鑰', type='password')
+openai.api_key = api_key
 
-if api_key:
-    openai.api_key = api_key
+st.title('音訊轉錄並生成摘要')
 
-    # 上傳影片
-    uploaded_file = st.file_uploader("上傳影片檔案", type=["mp4", "m4a", "wav", "flac"])
+# 上傳音訊文件
+uploaded_file = st.file_uploader("上傳音訊檔案", type=["mp3", "wav", "m4a", "flac"])
 
-    if uploaded_file is not None:
-        # 將上傳的文件保存到臨時文件中，並添加適當的擴展名
-        suffix = os.path.splitext(uploaded_file.name)[1]  # 獲取原文件的擴展名
-        with NamedTemporaryFile(delete=False, suffix=suffix) as temp_file:
-            temp_file.write(uploaded_file.read())
-            temp_file_path = temp_file.name
+if uploaded_file and api_key:
+    # 保存上傳的文件到臨時文件
+    with NamedTemporaryFile(delete=False, suffix='.mp3') as temp_file:
+        temp_file.write(uploaded_file.read())
+        temp_file_path = temp_file.name
 
-        st.write(f"影片上傳完成，文件路徑：{temp_file_path}")
-
-        # 使用 Whisper 將音訊轉換為文字
-        st.write("轉換音訊為文字中...")
-        model = whisper.load_model("base")
-        result = model.transcribe(temp_file_path)
-        text = result['text']
-        st.write("轉換完成。")
-
-        # 顯示轉換出的文字
-        st.subheader('影片文字內容:')
-        st.text_area("影片內容:", text, height=200)
-
-        # 使用 OpenAI API 生成摘要
-        st.write("生成摘要中...")
-        response = openai.ChatCompletion.create(
-            model="gpt-4-mini",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": f"請用中文總結以下影片內容：\n\n{text}"}
-            ]
+    # 使用 OpenAI Whisper 進行音訊轉錄
+    st.write("轉錄音訊中...")
+    with open(temp_file_path, "rb") as audio_file:
+        response = openai.Audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_file
         )
 
-        summary = response['choices'][0]['message']['content']
-        st.subheader('影片摘要:')
-        st.write(summary)
+    # 顯示轉錄結果
+    transcription_text = response['text']
+    st.subheader('音訊轉錄內容:')
+    st.text_area("音訊內容:", transcription_text, height=200)
 
-        # 清理臨時文件
-        os.remove(temp_file_path)
+    # 清理臨時文件
+    os.remove(temp_file_path)
 else:
-    st.warning("請輸入 OpenAI API 金鑰以進行後續操作。")
+    st.warning("請輸入 OpenAI API 金鑰並上傳音訊檔案。")
