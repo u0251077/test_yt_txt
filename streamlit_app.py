@@ -10,7 +10,7 @@ openai.api_key = 'your-api-key'
 st.title('影片轉文字並生成摘要')
 
 # 上傳影片
-uploaded_file = st.file_uploader("上傳影片檔案", type=["mp4", "m4a", "wav", "flac"])
+uploaded_file = st.file_uploader("上傳影片檔案", type=["mp4", "m4a", "wav", "flac", "mp3"])
 
 if uploaded_file is not None:
     # 將上傳的文件保存到臨時文件中
@@ -22,6 +22,7 @@ if uploaded_file is not None:
 
     # 步驟 2：使用 Whisper 將音訊轉換為文字
     st.write("轉換音訊為文字中...")
+    st.write(temp_file_path)
     model = whisper.load_model("base")
     result = model.transcribe(temp_file_path)
     text = result['text']
