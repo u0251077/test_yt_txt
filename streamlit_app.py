@@ -41,7 +41,5 @@ if uploaded_file and api_key:
     st.success(chat_with_gpt(transcription.text), icon="✅")
 
     
-    # 清理臨時文件
-    os.remove(temp_file_path)
 else:
     st.warning("請輸入 OpenAI API 金鑰並上傳音訊檔案。")
