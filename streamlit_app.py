@@ -25,7 +25,7 @@ if api_key:
             st.error(f"提取概念时发生错误: {e}")
             return ""
 
-    # 初始化思维导图的节点和边
+    # 初始化节点
     if 'nodes' not in st.session_state:
         st.session_state.nodes = []
     if 'edges' not in st.session_state:
@@ -47,7 +47,7 @@ if api_key:
                 nodes_set = set()
                 edges_set = set()
                 
-                # 通过正则表达式提取概念和关系
+                # 提取关系
                 matches = re.findall(r'(\S+) → (\S+)', extracted_text)
                 for source, target in matches:
                     source = source.strip()
