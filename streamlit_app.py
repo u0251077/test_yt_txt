@@ -16,7 +16,7 @@ if api_key:
                 model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": "从下面的句子中提取出关键概念和它们之间的关系："+text}
+                    {"role": "user", "content": "从下面的句子中提取出節點（nodes）和它们之间的關係（relationships）："+text}
                 ],
                 max_tokens=15000
             )
