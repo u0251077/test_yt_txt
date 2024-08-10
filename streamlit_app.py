@@ -1,4 +1,5 @@
 import yt_dlp as youtube_dl
+import streamlit as st
 
 def download_audio_from_youtube(url, output_audio_path):
     ydl_opts = {
@@ -21,6 +22,5 @@ youtube_url = "https://youtu.be/gOCN-mU7qkg"
 output_audio_path = "downloaded_audio"
 
 # 下载 YouTube 音频
-st.write("test")
-#download_audio_from_youtube(youtube_url, output_audio_path)
+download_audio_from_youtube(youtube_url, output_audio_path)
 
