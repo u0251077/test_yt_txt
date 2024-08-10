@@ -13,7 +13,7 @@ def extract_concepts_from_text(text):
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "請用中文摘要以下內容"+prompt}
+            {"role": "user", "content": "从下面的句子中提取出关键概念和它们之间的关系"+text}
         ],
         max_tokens=150
     )
