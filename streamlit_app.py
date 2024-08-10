@@ -13,6 +13,19 @@ st.title('音訊轉錄並生成摘要')
 # 上傳音訊文件
 uploaded_file = st.file_uploader("上傳音訊檔案", type=["mp3", "wav", "m4a", "flac"])
 
+# 对话函数
+def chat_with_gpt(prompt):
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": "請用中文摘要以下內容"+prompt}
+        ],
+        max_tokens=150
+    )
+    return completion.choices[0].message.content.strip()
+
+
 if uploaded_file and api_key:
     # 保存上傳的文件到臨時文件
     with NamedTemporaryFile(delete=False, suffix='.mp3') as temp_file:
@@ -25,13 +38,9 @@ if uploaded_file and api_key:
       file=audio_file
     )
     st.write(transcription.text)
+    st.success(chat_with_gpt(transcription.text), icon="✅")
 
     
-    # 顯示轉錄結果
-    transcription_text = response['text']
-    st.subheader('音訊轉錄內容:')
-    st.text_area("音訊內容:", transcription_text, height=200)
-
     # 清理臨時文件
     os.remove(temp_file_path)
 else:
