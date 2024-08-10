@@ -18,7 +18,7 @@ if api_key:
             ],
             max_tokens=150
         )
-        return completion.choices[0].message['content'].strip()
+        return completion.choices[0].message.content.strip()
 
     # 初始化思维导图的节点和边
     if 'nodes' not in st.session_state:
