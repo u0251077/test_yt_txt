@@ -1,3 +1,4 @@
 yfinance
 yt_dlp
 ffmpeg-python
+streamlit
