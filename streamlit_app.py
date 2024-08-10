@@ -5,7 +5,6 @@ import streamlit.components.v1 as components
 
 # 配置 OpenAI API 密钥
 api_key = st.text_input('請輸入 OpenAI API 金鑰', type='password')
-openai.api_key = api_key
 client = OpenAI(api_key=api_key)
 
 # 函数：获取对话中的关键信息
