@@ -18,7 +18,7 @@ if api_key:
                     {"role": "system", "content": "You are a helpful assistant."},
                     {"role": "user", "content": "从下面的句子中提取出关键概念和它们之间的关系："+text}
                 ],
-                max_tokens=150
+                max_tokens=15000
             )
             return completion.choices[0].message.content.strip()
         except Exception as e:
