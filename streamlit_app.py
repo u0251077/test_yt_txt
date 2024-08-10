@@ -2,6 +2,7 @@ import streamlit as st
 from openai import OpenAI
 from pyvis.network import Network
 import streamlit.components.v1 as components
+import re
 
 # 配置 OpenAI API 密钥
 api_key = st.text_input('请输入 OpenAI API 密钥', type='password')
@@ -42,17 +43,21 @@ if api_key:
                 st.session_state.nodes = []  # 清空节点和边
                 st.session_state.edges = []
                 
-                # 假设提取的内容格式为：概念1 -> 概念2
-                for line in extracted_text.split('\n'):
-                    if '->' in line:
-                        source, target = line.split('->')
-                        source = source.strip()
-                        target = target.strip()
-                        if source not in st.session_state.nodes:
-                            st.session_state.nodes.append(source)
-                        if target not in st.session_state.nodes:
-                            st.session_state.nodes.append(target)
-                        st.session_state.edges.append((source, target))
+                # 提取节点和边
+                nodes_set = set()
+                edges_set = set()
+                
+                # 通过正则表达式提取概念和关系
+                matches = re.findall(r'(\S+) → (\S+)', extracted_text)
+                for source, target in matches:
+                    source = source.strip()
+                    target = target.strip()
+                    nodes_set.add(source)
+                    nodes_set.add(target)
+                    edges_set.add((source, target))
+                
+                st.session_state.nodes.extend(nodes_set)
+                st.session_state.edges.extend(edges_set)
                 
                 # 打印调试信息
                 st.write("当前节点:", st.session_state.nodes)
