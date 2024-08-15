@@ -22,7 +22,7 @@ if st.button("Generate Summary"):
             video_id = match.group(0)
             try:
                 # Get transcript
-                transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['zh', 'en', 'zh-TW', 'zh-Hans'])
+                transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['zh', 'en', 'zh-TW', 'zh-Hans', 'zh-Hant'])
                 # Combine transcript into a single string
                 full_text = ' '.join(item['text'] for item in transcript)
                 st.write("Transcript:")
