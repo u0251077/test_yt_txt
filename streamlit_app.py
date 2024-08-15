@@ -23,9 +23,12 @@ if st.button("Generate Summary"):
             try:
                 # Get transcript
                 transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['en', 'zh-TW', 'zh-Hans'])
+                
                 # Combine transcript into a single string
                 full_text = ' '.join(item['text'] for item in transcript)
-                st.write("Transcript:", full_text)
+                
+                # Display transcript
+                st.text_area("Transcript", value=full_text, height=300, max_chars=None)
                 
                 if google_api_key:
                     # Configure Google API key
@@ -36,8 +39,8 @@ if st.button("Generate Summary"):
                     response = model.generate_content(full_text)
                     
                     # Display summary
-                    summary = response.text  # Adjust this if the response format differs
-                    st.write("Summary:", summary)
+                    summary = '請使用中文,協助我將以上內容進行摘要,內容為:' + response.text  # Adjust this if the response format differs
+                    st.text_area("Summary", value=summary, height=300, max_chars=None)
                 else:
                     st.error("Please enter your Google API key in the sidebar.")
             except Exception as e:
