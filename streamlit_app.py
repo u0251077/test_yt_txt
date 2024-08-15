@@ -36,7 +36,7 @@ if st.button("Generate Summary"):
                     
                     # Generate summary
                     model = genai.GenerativeModel(selected_model)
-                    response = model.generate_content('請使用中文,協助我將以上內容進行摘要,內容為:' + full_text)
+                    response = model.generate_content(full_text)
                     
                     # Display summary
                     summary = response.text  # Adjust this if the response format differs
