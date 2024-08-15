@@ -1,6 +1,4 @@
-yfinance
-pytube
+youtube-transcript-api
 streamlit
-whisper
 openai
-pyvis 
+ 
