@@ -1,34 +1,46 @@
 import streamlit as st
-from youtube_transcript_api import YouTubeTranscriptApi
 import re
+from youtube_transcript_api import YouTubeTranscriptApi
+import google.generativeai as genai
 
-# Streamlit应用程序
-st.title('YouTube 字幕提取器')
+# Sidebar for API key and model selection
+st.sidebar.header("Google API Configuration")
+google_api_key = st.sidebar.text_input("Google API Key", key="google_api_key", type="password")
+selected_model = st.sidebar.selectbox("Select Model", ["gemini-1.5-flash", "gemini-1.5-pro"])
 
-# 输入URL
-url = st.text_input('请输入YouTube视频URL', 'https://youtu.be/EHpzHtP1FpE')
+st.title("YouTube Transcript Summarizer")
 
-# 提取视频ID
-def extract_video_id(url):
-    match = re.search(r"(?<=youtu\.be/)[\w-]+", url)
-    return match.group(0) if match else None
-
-if url:
-    video_id = extract_video_id(url)
-    
-    if video_id:
-        st.write(f"提取的视频ID: {video_id}")
-
-        try:
-            # 获取字幕
-            transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['en', 'zh-TW', 'zh-Hans'])
-            
-            # 将字幕内容组合成一整串的文字
-            full_text = ' '.join(item['text'] for item in transcript)
-            
-            # 显示组合后的文本内容
-            st.text_area('提取的字幕内容', full_text, height=300)
-        except Exception as e:
-            st.error(f"无法获取字幕：{e}")
+# Input URL and button to generate summary
+youtube_url = st.text_input("Enter YouTube URL")
+if st.button("Generate Summary"):
+    if not youtube_url:
+        st.error("Please enter a YouTube URL.")
     else:
-        st.error("无法提取视频ID")
+        # Extract video ID from URL
+        match = re.search(r"(?<=youtu\.be/)[\w-]+", youtube_url)
+        if match:
+            video_id = match.group(0)
+            try:
+                # Get transcript
+                transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['en', 'zh-TW', 'zh-Hans'])
+                # Combine transcript into a single string
+                full_text = ' '.join(item['text'] for item in transcript)
+                st.write("Transcript:", full_text)
+                
+                if google_api_key:
+                    # Configure Google API key
+                    genai.configure(api_key=google_api_key)
+                    
+                    # Generate summary
+                    model = genai.GenerativeModel(selected_model)
+                    response = model.generate_content(full_text)
+                    
+                    # Display summary
+                    summary = response.text  # Adjust this if the response format differs
+                    st.write("Summary:", summary)
+                else:
+                    st.error("Please enter your Google API key in the sidebar.")
+            except Exception as e:
+                st.error(f"Error fetching transcript: {e}")
+        else:
+            st.error("Invalid YouTube URL.")
