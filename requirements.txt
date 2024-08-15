@@ -1,4 +1,4 @@
 youtube-transcript-api
 streamlit
 openai
- 
+google-generativeai
