@@ -3,11 +3,23 @@ import re
 from youtube_transcript_api import YouTubeTranscriptApi
 import google.generativeai as genai
 
+
+def extract_youtube_id(url):
+    # 定義正則表達式來匹配 YouTube 影片的 ID
+    pattern = r"(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)([\w-]{11})"
+    match = re.search(pattern, url)
+    if match:
+        return match.group(1)
+    else:
+        return None
+
+
 # Sidebar for API key and model selection
 st.sidebar.header("Google API Configuration")
 google_api_key = st.sidebar.text_input("Google API Key", key="google_api_key", type="password")
 selected_model = st.sidebar.selectbox("Select Model", ["gemini-1.5-flash", "gemini-1.5-pro"])
 st.sidebar.write("[Get an Gemini API key](https://ai.google.dev/gemini-api?hl=zh-tw)")
+
 
 
 st.title("YouTube Transcript Summarizer")
@@ -19,9 +31,8 @@ if st.button("Generate Summary"):
         st.error("Please enter a YouTube URL.")
     else:
         # Extract video ID from URL
-        match = re.search(r"(?<=youtu\.be/)[\w-]+", youtube_url)
-        if match:
-            video_id = match.group(0)
+        if True:
+            video_id = extract_youtube_id(youtube_url)
             try:
                 # Get transcript
                 transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['zh', 'en', 'zh-TW', 'zh-Hans', 'zh-Hant'])
