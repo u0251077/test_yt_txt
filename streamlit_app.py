@@ -33,11 +33,7 @@ if st.button("Generate Summary"):
         # Extract video ID from URL
         if True:
             video_id = extract_youtube_id(youtube_url)
-            st.button(video_id)
 
-            match = re.search(r"(?<=youtu\.be/)[\w-]+", youtube_url)
-            video_id = match.group(0)
-            st.write(video_id)
             try:
                 # Get transcript
                 transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['zh', 'en', 'zh-TW', 'zh-Hans', 'zh-Hant'])
