@@ -7,7 +7,7 @@ import google.generativeai as genai
 st.sidebar.header("Google API Configuration")
 google_api_key = st.sidebar.text_input("Google API Key", key="google_api_key", type="password")
 selected_model = st.sidebar.selectbox("Select Model", ["gemini-1.5-flash", "gemini-1.5-pro"])
-"[Get an Gemini API key](https://ai.google.dev/gemini-api?hl=zh-tw)"
+st.sidebar.text_input("[Get an Gemini API key](https://ai.google.dev/gemini-api?hl=zh-tw)")
 
 
 st.title("YouTube Transcript Summarizer")
