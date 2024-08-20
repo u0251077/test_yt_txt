@@ -36,7 +36,7 @@ if st.button("Generate Summary"):
 
             try:
                 # Get transcript
-                transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['zh', 'en', 'zh-TW', 'zh-Hans', 'zh-Hant'])
+                transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['zh', 'en', 'zh-TW', 'zh-Hans', 'zh-Hant','en-US'])
                 # Combine transcript into a single string
                 full_text = ' '.join(item['text'] for item in transcript)
                 #st.write("Transcript:") #輸出完整文字內容
