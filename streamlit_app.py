@@ -34,7 +34,7 @@ if st.button("Generate Summary"):
                     
                     # Generate summary with custom prompt
                     model = genai.GenerativeModel(selected_model)
-                    prompt = f"請用中文協助我將以下內容進行摘要分析：\n\n{full_text}"
+                    prompt = f"請用繁體中文協助我將以下內容進行摘要分析：\n\n{full_text}"
                     response = model.generate_content(prompt)
                     
                     # Display summary
