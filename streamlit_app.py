@@ -25,8 +25,8 @@ if st.button("Generate Summary"):
                 transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['zh', 'en', 'zh-TW', 'zh-Hans', 'zh-Hant'])
                 # Combine transcript into a single string
                 full_text = ' '.join(item['text'] for item in transcript)
-                st.write("Transcript:")
-                st.text_area(full_text)
+                #st.write("Transcript:")
+                #st.text_area(full_text)
                 
                 if google_api_key:
                     # Configure Google API key
